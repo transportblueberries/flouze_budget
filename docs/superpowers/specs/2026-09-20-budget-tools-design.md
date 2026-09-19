@@ -79,14 +79,15 @@ Rules:
 
 ## 4. Persistence and privacy
 
-Data may optionally be stored in `localStorage` on the user's device.
+Calculations work without persistence. Users may explicitly enable a "Remember my values on this device" option, which stores calculator values only in `localStorage` on that device. Persistence is off by default.
 
 Requirements:
 - No backend.
 - No analytics requirement for V1.
 - No financial values sent to a server.
 - A visible privacy note: "Your financial data stays in your browser. Flouze does not send it to a server."
-- Provide a "Reset all data" action that clears locally stored calculator values.
+- Provide a "Reset all data" action that clears locally stored calculator values and resets the forms.
+- Clearly warn that saved values remain on the device until reset or browser storage is cleared, which matters on shared devices.
 
 ## 5. Currency handling
 
@@ -144,7 +145,7 @@ README.md
 
 JavaScript calculation modules should expose pure functions so that business logic can be tested independently from DOM code.
 
-`app.js` owns DOM bindings and rendering. `storage.js` owns optional localStorage read/write/reset behavior.
+`app.js` owns DOM bindings and rendering. `storage.js` owns opt-in localStorage read/write/reset behavior.
 
 ## 8. Calculation contracts
 
@@ -160,10 +161,10 @@ Then:
 - `unallocated = income - totalExpenses - plannedSavings`
 - `savingsRate = income > 0 ? plannedSavings / income : 0`
 
-Status:
-- surplus if `unallocated > 0`
-- balanced if `unallocated === 0` within normal currency rounding tolerance
-- deficit if `unallocated < 0`
+Status is determined after rounding `unallocated` to the selected currency's displayed precision:
+- surplus if rounded `unallocated > 0`
+- balanced if rounded `unallocated === 0`
+- deficit if rounded `unallocated < 0`
 
 ### 50 / 30 / 20
 
