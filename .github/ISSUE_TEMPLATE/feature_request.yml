@@ -1,0 +1,44 @@
+name: Feature request
+description: Suggest an improvement for Flouze Budget
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Flouze Budget. Start with the student problem or need, then describe the feature idea.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Explain the user or student need before proposing a solution.
+      placeholder: As a student, I need ... because ...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the simplest useful solution you have in mind.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional. Mention other ways this problem could be solved.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Mockups, examples and references are welcome.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues before opening this one.
+          required: true
+        - label: This request is relevant to student budgeting or personal-finance workflows.
+          required: true
