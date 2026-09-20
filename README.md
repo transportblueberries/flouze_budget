@@ -14,6 +14,44 @@ Flouze Budget is part of a broader student-focused initiative to build practical
 
 The project is currently in an early stage. The repository is being opened progressively so that the community can follow development, suggest improvements and contribute.
 
+## Budget tools
+
+The public repository now includes three lightweight tools:
+
+- **Monthly budget** — compare net monthly income with common student expense categories and planned savings.
+- **50 / 30 / 20 reference** — see a simple needs / wants / savings split. This is a reference framework, not a personalised recommendation.
+- **Savings goal** — estimate how many monthly contributions are needed to reach a target, without assuming investment returns or interest.
+
+The tools support CHF, EUR and USD display formatting. Currency selection changes formatting only; Flouze does not perform foreign-exchange conversion.
+
+## Privacy model
+
+The calculators run entirely in the browser. No backend is required and financial values are not sent to a server by this project.
+
+Saving values is optional and disabled by default. If enabled, values are stored in the browser's localStorage on that device. Use **Reset all data** before leaving a shared device.
+
+## Run locally
+
+No application dependencies are required.
+
+```bash
+python3 -m http.server 4173
+```
+
+Then open `http://localhost:4173` in a browser.
+
+## Tests
+
+The calculation and storage modules use Node's built-in test runner:
+
+```bash
+npm test
+```
+
+## Important note
+
+Flouze Budget provides educational budgeting utilities. It does not provide personalised financial advice, investment advice, credit decisions or bank-account connectivity.
+
 ## Goals
 
 - Make student budgeting easier to understand and manage
