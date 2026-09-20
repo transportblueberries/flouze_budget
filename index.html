@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Free, open-source budgeting tools for students.">
+  <title>Flouze Budget Tools</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell">
+      <p class="eyebrow">Flouze Budget</p>
+      <h1>Simple money tools for students</h1>
+      <p class="lede">Plan a monthly budget, explore the 50/30/20 reference, or estimate when you can reach a savings goal.</p>
+      <div class="notice" role="note">
+        <strong>Private by default.</strong> Your financial data stays in your browser. Flouze does not send it to a server.
+      </div>
+      <p class="disclaimer">Educational tools only — not personalised financial advice.</p>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="preferences" aria-labelledby="preferences-title">
+      <h2 id="preferences-title">Preferences</h2>
+      <div class="preferences-grid">
+        <label for="currency">Display currency
+          <select id="currency" name="currency">
+            <option value="CHF" selected>CHF</option>
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+          </select>
+        </label>
+        <label class="checkbox-row" for="remember-values">
+          <input id="remember-values" type="checkbox">
+          Remember my values on this device
+        </label>
+        <button id="reset-data" class="button button-secondary" type="button">Reset all data</button>
+      </div>
+      <p class="shared-device-note">If you enable saving on a shared device, your values remain there until you reset them or clear browser storage.</p>
+    </section>
+
+    <nav class="tool-tabs" aria-label="Budget tools" role="tablist">
+      <button id="tab-budget" class="tool-tab" type="button" role="tab" aria-selected="true" aria-controls="panel-budget">Monthly budget</button>
+      <button id="tab-rule" class="tool-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-rule" tabindex="-1">50 / 30 / 20</button>
+      <button id="tab-savings" class="tool-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-savings" tabindex="-1">Savings goal</button>
+    </nav>
+
+    <section id="panel-budget" class="tool-panel" role="tabpanel" aria-labelledby="tab-budget">
+      <div class="tool-layout">
+        <form id="budget-form" novalidate>
+          <h2>Monthly budget</h2>
+          <p>Enter monthly amounts. Planned savings are kept separate from spending.</p>
+          <div class="field-grid">
+            <label for="budget-income">Net monthly income<input id="budget-income" inputmode="decimal" autocomplete="off"></label>
+            <label for="budget-housing">Housing<input id="budget-housing" inputmode="decimal" autocomplete="off"></label>
+            <label for="budget-groceries">Groceries<input id="budget-groceries" inputmode="decimal" autocomplete="off"></label>
+            <label for="budget-transport">Transport<input id="budget-transport" inputmode="decimal" autocomplete="off"></label>
+            <label for="budget-insurance">Insurance / health<input id="budget-insurance" inputmode="decimal" autocomplete="off"></label>
+            <label for="budget-education">Education<input id="budget-education" inputmode="decimal" autocomplete="off"></label>
+            <label for="budget-subscriptions">Subscriptions<input id="budget-subscriptions" inputmode="decimal" autocomplete="off"></label>
+            <label for="budget-leisure">Leisure<input id="budget-leisure" inputmode="decimal" autocomplete="off"></label>
+            <label for="budget-other">Other expenses<input id="budget-other" inputmode="decimal" autocomplete="off"></label>
+            <label for="budget-planned-savings">Planned savings<input id="budget-planned-savings" inputmode="decimal" autocomplete="off"></label>
+          </div>
+        </form>
+        <aside class="results-card" aria-live="polite" aria-atomic="true">
+          <h3>Monthly summary</h3>
+          <dl>
+            <div><dt>Expenses</dt><dd id="budget-expenses">CHF 0.00</dd></div>
+            <div><dt>Planned savings</dt><dd id="budget-savings">CHF 0.00</dd></div>
+            <div><dt>Unallocated</dt><dd id="budget-unallocated">CHF 0.00</dd></div>
+            <div><dt>Savings rate</dt><dd id="budget-rate">0.0%</dd></div>
+          </dl>
+          <p id="budget-status" class="status-text">Balanced: every entered franc is allocated.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="panel-rule" class="tool-panel" role="tabpanel" aria-labelledby="tab-rule" hidden>
+      <div class="tool-layout">
+        <form id="rule-form" novalidate>
+          <h2>50 / 30 / 20 reference</h2>
+          <p>This is a simple budgeting reference, not a rule or personalised recommendation.</p>
+          <label for="rule-income">Net monthly income<input id="rule-income" inputmode="decimal" autocomplete="off"></label>
+        </form>
+        <aside class="results-card" aria-live="polite" aria-atomic="true">
+          <h3>Reference split</h3>
+          <dl>
+            <div><dt>Needs — 50%</dt><dd id="rule-needs">CHF 0.00</dd></div>
+            <div><dt>Wants — 30%</dt><dd id="rule-wants">CHF 0.00</dd></div>
+            <div><dt>Savings / debt reduction — 20%</dt><dd id="rule-savings">CHF 0.00</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section id="panel-savings" class="tool-panel" role="tabpanel" aria-labelledby="tab-savings" hidden>
+      <div class="tool-layout">
+        <form id="savings-form" novalidate>
+          <h2>Savings goal</h2>
+          <div class="field-grid">
+            <label for="savings-target">Savings target<input id="savings-target" inputmode="decimal" autocomplete="off"></label>
+            <label for="savings-current">Already saved<input id="savings-current" inputmode="decimal" autocomplete="off"></label>
+            <label for="savings-monthly">Monthly contribution<input id="savings-monthly" inputmode="decimal" autocomplete="off"></label>
+          </div>
+        </form>
+        <aside class="results-card" aria-live="polite" aria-atomic="true">
+          <h3>Goal estimate</h3>
+          <dl>
+            <div><dt>Remaining</dt><dd id="savings-remaining">CHF 0.00</dd></div>
+            <div><dt>Estimated time</dt><dd id="savings-months">Goal already reached</dd></div>
+            <div><dt>Approximate date</dt><dd id="savings-date">Today</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section class="open-source" aria-labelledby="open-source-title">
+      <h2 id="open-source-title">Open source</h2>
+      <p>Flouze Budget is MIT licensed. Contributions, bug reports and ideas are welcome.</p>
+      <p><a href="https://github.com/transportblueberries/flouze_budget">View the project on GitHub</a> · <a href="./CONTRIBUTING.md">Contribution guide</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell">
+      <p>Flouze Budget · <a href="./LICENSE">MIT License</a> · <a href="https://flouze.ch">flouze.ch</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
