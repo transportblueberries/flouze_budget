@@ -56,3 +56,17 @@ test('clearState removes saved values', () => {
   clearState(storage);
   assert.equal(loadSavedState(storage), null);
 });
+
+test('storage failures never break the calculator flow', () => {
+  const blocked = {
+    getItem() { throw new Error('blocked'); },
+    setItem() { throw new Error('blocked'); },
+    removeItem() { throw new Error('blocked'); },
+  };
+
+  assert.equal(loadSavedState(blocked), null);
+  assert.doesNotThrow(() => clearState(blocked));
+  assert.doesNotThrow(() => saveState(blocked, { income: '1000' }));
+  assert.equal(syncSavedState(blocked, true, { income: '1000' }), false);
+  assert.equal(syncSavedState(blocked, false, { income: '1000' }), false);
+});

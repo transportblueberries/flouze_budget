@@ -28,7 +28,9 @@ export function roundMoney(value) {
   if (!Number.isFinite(value)) {
     throw new TypeError('Enter a valid amount.');
   }
-  return Math.round((value + Number.EPSILON) * 100) / 100;
+  const sign = value < 0 ? -1 : 1;
+  const rounded = sign * (Math.round((Math.abs(value) + Number.EPSILON) * 100) / 100);
+  return Object.is(rounded, -0) ? 0 : rounded;
 }
 
 export function formatCurrency(value, currency = 'CHF', locale = 'en-CH') {

@@ -136,6 +136,7 @@ test('updates the monthly budget immediately when an input changes', async () =>
   assert.match(document.getElementById('budget-unallocated').textContent, /1.?500\.00/);
   assert.equal(document.getElementById('budget-rate').textContent, '10.0%');
   assert.equal(document.getElementById('budget-status').dataset.status, 'surplus');
+  assert.match(document.getElementById('budget-status').textContent, /surplus/i);
 });
 
 test('shows an inline validation error for a negative amount', async () => {

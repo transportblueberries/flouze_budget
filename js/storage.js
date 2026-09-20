@@ -21,14 +21,24 @@ export function loadSavedState(storage) {
 }
 
 export function saveState(storage, state) {
-  storage.setItem(STORAGE_KEY, JSON.stringify({
-    version: STORAGE_VERSION,
-    state,
-  }));
+  try {
+    storage.setItem(STORAGE_KEY, JSON.stringify({
+      version: STORAGE_VERSION,
+      state,
+    }));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function clearState(storage) {
-  storage.removeItem(STORAGE_KEY);
+  try {
+    storage.removeItem(STORAGE_KEY);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function syncSavedState(storage, enabled, state) {
@@ -36,6 +46,5 @@ export function syncSavedState(storage, enabled, state) {
     clearState(storage);
     return false;
   }
-  saveState(storage, state);
-  return true;
+  return saveState(storage, state);
 }

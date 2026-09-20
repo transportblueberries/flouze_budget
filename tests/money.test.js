@@ -32,6 +32,11 @@ test('rounds normal floating point noise to currency precision', () => {
   assert.equal(roundMoney(12.345), 12.35);
 });
 
+test('rounds negative half-cent values symmetrically', () => {
+  assert.equal(roundMoney(-1.005), -1.01);
+  assert.equal(roundMoney(-0.005), -0.01);
+});
+
 test('formats supported currencies and rejects unsupported currency codes', () => {
   const formatted = formatCurrency(12.5, 'CHF', 'en-CH');
   assert.match(formatted, /12[.,]50/);

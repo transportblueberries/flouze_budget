@@ -94,10 +94,10 @@ function renderBudget() {
   const status = document.querySelector('#budget-status');
   status.dataset.status = result.status;
   status.textContent = result.status === 'surplus'
-    ? `${money(result.unallocated)} remains unallocated.`
+    ? `Surplus — ${money(result.unallocated)} remains unallocated.`
     : result.status === 'deficit'
-      ? `Your plan exceeds income by ${money(Math.abs(result.unallocated))}.`
-      : 'Every entered amount is allocated.';
+      ? `Deficit — your plan exceeds income by ${money(Math.abs(result.unallocated))}.`
+      : 'Balanced — every entered amount is allocated.';
 }
 
 function renderRule() {

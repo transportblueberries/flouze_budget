@@ -39,9 +39,6 @@ dl div { display: flex; justify-content: space-between; gap: 1rem; padding: .7re
 dt { color: #405047; }
 dd { margin: 0; font-weight: 750; text-align: right; }
 .status-text { margin-bottom: 0; font-weight: 700; }
-.status-text[data-status="surplus"]::before { content: "Surplus — "; }
-.status-text[data-status="deficit"]::before { content: "Deficit — "; }
-.status-text[data-status="balanced"]::before { content: "Balanced — "; }
 .site-footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid #d9e3dc; color: #4d5d53; }
 [hidden] { display: none !important; }
 
