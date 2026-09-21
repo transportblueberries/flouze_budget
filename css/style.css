@@ -23,9 +23,10 @@ h1 { max-width: 760px; margin: 0; font-size: clamp(2rem, 7vw, 4rem); line-height
 label { display: grid; gap: .35rem; font-weight: 650; }
 input, select { width: 100%; min-height: 44px; padding: .7rem .8rem; border: 1px solid #9caaa1; border-radius: .65rem; background: #fff; color: inherit; }
 input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #6b8f7a; outline-offset: 2px; }
-.field-error { margin: -.15rem 0 .25rem; color: #7a1f1f; font-size: .875rem; font-weight: 600; }
+.field-error { margin: .5rem 0; color: #7a1f1f; font-size: .875rem; font-weight: 600; }
 .button, .tool-tab { min-height: 44px; border-radius: .7rem; border: 1px solid #718078; padding: .7rem 1rem; cursor: pointer; }
-.button-secondary { background: #fff; color: #17211b; }
+.button { background: #173c2b; color: #fff; border-color: #173c2b; }
+.button-secondary { background: #fff; color: #17211b; border-color: #718078; }
 .tool-tabs { display: grid; grid-template-columns: 1fr; gap: .5rem; margin: 2rem 0 1rem; }
 .tool-tab { background: #fff; color: #17211b; text-align: left; }
 .tool-tab[aria-selected="true"] { background: #173c2b; color: #fff; border-color: #173c2b; }
@@ -42,10 +43,38 @@ dd { margin: 0; font-weight: 750; text-align: right; }
 .site-footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid #d9e3dc; color: #4d5d53; }
 [hidden] { display: none !important; }
 
+.project-header { display: grid; gap: 1rem; }
+.project-basics { align-self: start; }
+.project-section { margin-top: 1.5rem; padding: 1rem; border: 1px solid #dce4de; border-radius: .9rem; }
+fieldset.project-section { min-width: 0; }
+.project-section legend { padding: 0 .4rem; font-weight: 750; }
+.participant-grid { display: grid; gap: .75rem; }
+.participant-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(100px, 1fr); gap: .75rem; padding: .75rem; border-radius: .75rem; background: #f7f9f7; }
+.transaction-grid { display: grid; gap: .85rem; }
+.transaction-actions { display: flex; flex-wrap: wrap; gap: .6rem; align-items: end; }
+.project-summary-grid { display: grid; gap: 1rem; margin-top: 1.5rem; }
+.plain-list { margin: 0; padding-left: 1.2rem; }
+.plain-list li + li { margin-top: .45rem; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 680px; }
+th, td { padding: .7rem; border-bottom: 1px solid #dce4de; text-align: left; vertical-align: top; }
+thead th { color: #405047; font-size: .9rem; }
+.link-button { border: 0; padding: .2rem; background: transparent; color: #174d35; text-decoration: underline; cursor: pointer; }
+#project-remaining[data-status="over"] { color: #7a1f1f; }
+#project-remaining[data-status="under"] { color: #174d35; }
+
 @media (min-width: 720px) {
   .preferences-grid { grid-template-columns: 1fr 1.4fr auto; align-items: end; }
-  .tool-tabs { grid-template-columns: repeat(3, 1fr); }
+  .tool-tabs { grid-template-columns: repeat(4, 1fr); }
   .tool-tab { text-align: center; }
   .field-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tool-layout { grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr); }
+  .project-header { grid-template-columns: minmax(0, 1fr) minmax(320px, .8fr); }
+  .participant-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .transaction-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .project-summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 980px) {
+  .transaction-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
