@@ -12,7 +12,7 @@
     <div class="shell">
       <p class="eyebrow">Flouze Budget</p>
       <h1>Simple money tools for students</h1>
-      <p class="lede">Plan a monthly budget, explore the 50/30/20 reference, or estimate when you can reach a savings goal.</p>
+      <p class="lede">Plan a monthly budget, explore the 50/30/20 reference, estimate a savings goal, or track a shared trip or project.</p>
       <div class="notice" role="note">
         <strong>Private by default.</strong> Your financial data stays in your browser. Flouze does not send it to a server.
       </div>
@@ -44,6 +44,7 @@
       <button id="tab-budget" class="tool-tab" type="button" role="tab" aria-selected="true" aria-controls="panel-budget">Monthly budget</button>
       <button id="tab-rule" class="tool-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-rule" tabindex="-1">50 / 30 / 20</button>
       <button id="tab-savings" class="tool-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-savings" tabindex="-1">Savings goal</button>
+      <button id="tab-project" class="tool-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-project" tabindex="-1">Trip / project</button>
     </nav>
 
     <section id="panel-budget" class="tool-panel" role="tabpanel" aria-labelledby="tab-budget">
@@ -114,6 +115,64 @@
           </dl>
         </aside>
       </div>
+    </section>
+
+    <section id="panel-project" class="tool-panel" role="tabpanel" aria-labelledby="tab-project" hidden>
+      <div class="project-header">
+        <div>
+          <h2>Trip / project budget</h2>
+          <p>Track a shared trip, move or event. Convert every expense to the display currency, then calculate each participant's fair share and reimbursements.</p>
+        </div>
+        <div class="field-grid project-basics">
+          <label for="project-title">Project name<input id="project-title" autocomplete="off" placeholder="Bilbao 2025"></label>
+          <label for="project-budget">Planned budget<input id="project-budget" inputmode="decimal" autocomplete="off" placeholder="1500"></label>
+        </div>
+      </div>
+
+      <fieldset class="project-section">
+        <legend>Participants and split weights</legend>
+        <p class="shared-device-note">Use equal weights such as 1 / 1 for a 50/50 split, or values such as 45.7 / 54.3 for an income-weighted split.</p>
+        <div class="participant-grid">
+          <div class="participant-row"><label for="project-participant-1-name">Participant 1<input id="project-participant-1-name" value="Person 1"></label><label for="project-participant-1-weight">Weight<input id="project-participant-1-weight" inputmode="decimal" value="1"></label></div>
+          <div class="participant-row"><label for="project-participant-2-name">Participant 2<input id="project-participant-2-name" value="Person 2"></label><label for="project-participant-2-weight">Weight<input id="project-participant-2-weight" inputmode="decimal" value="1"></label></div>
+          <div class="participant-row"><label for="project-participant-3-name">Participant 3<input id="project-participant-3-name" placeholder="Optional"></label><label for="project-participant-3-weight">Weight<input id="project-participant-3-weight" inputmode="decimal"></label></div>
+          <div class="participant-row"><label for="project-participant-4-name">Participant 4<input id="project-participant-4-name" placeholder="Optional"></label><label for="project-participant-4-weight">Weight<input id="project-participant-4-weight" inputmode="decimal"></label></div>
+          <div class="participant-row"><label for="project-participant-5-name">Participant 5<input id="project-participant-5-name" placeholder="Optional"></label><label for="project-participant-5-weight">Weight<input id="project-participant-5-weight" inputmode="decimal"></label></div>
+          <div class="participant-row"><label for="project-participant-6-name">Participant 6<input id="project-participant-6-name" placeholder="Optional"></label><label for="project-participant-6-weight">Weight<input id="project-participant-6-weight" inputmode="decimal"></label></div>
+        </div>
+      </fieldset>
+
+      <form id="project-transaction-form" class="project-section" novalidate>
+        <h3>Add an expense</h3>
+        <div class="transaction-grid">
+          <label for="project-transaction-description">Description<input id="project-transaction-description" autocomplete="off" placeholder="Hotel"></label>
+          <label for="project-transaction-category">Category<select id="project-transaction-category"><option value="transport">Transport</option><option value="lodging">Lodging</option><option value="food">Food</option><option value="activities">Activities</option><option value="shopping">Shopping</option><option value="other">Other</option></select></label>
+          <label for="project-transaction-amount">Amount<input id="project-transaction-amount" inputmode="decimal" autocomplete="off" required></label>
+          <label for="project-transaction-currency">Original currency<select id="project-transaction-currency"><option value="CHF">CHF</option><option value="EUR">EUR</option><option value="USD">USD</option></select></label>
+          <label for="project-transaction-rate">Rate to display currency<input id="project-transaction-rate" inputmode="decimal" value="1" required></label>
+          <label for="project-transaction-payer">Paid by<select id="project-transaction-payer"></select></label>
+          <label for="project-transaction-type">Expense type<select id="project-transaction-type"><option value="shared">Shared</option><option value="personal">Personal</option></select></label>
+          <div class="transaction-actions"><button class="button" type="submit">Add expense</button><button id="project-clear-transactions" class="button button-secondary" type="button">Clear expenses</button></div>
+        </div>
+        <p class="shared-device-note">The exchange rate is manual in this version. Example: if 1 EUR = 0.95 CHF, enter 0.95 when CHF is the display currency.</p>
+        <p id="project-error" class="field-error" role="status" hidden></p>
+      </form>
+
+      <div class="project-summary-grid" aria-live="polite">
+        <aside class="results-card"><h3>Project summary</h3><dl><div><dt>Total spent</dt><dd id="project-total">CHF 0.00</dd></div><div><dt>Budget remaining</dt><dd id="project-remaining">CHF 0.00</dd></div><div><dt>Shared spending</dt><dd id="project-shared">CHF 0.00</dd></div><div><dt>Personal spending</dt><dd id="project-personal">CHF 0.00</dd></div></dl></aside>
+        <aside class="results-card"><h3>Reimbursements</h3><ul id="project-settlements" class="plain-list"><li>No reimbursement needed.</li></ul></aside>
+        <aside class="results-card"><h3>By category</h3><ul id="project-categories" class="plain-list"><li>No expenses yet.</li></ul></aside>
+      </div>
+
+      <section class="project-section" aria-labelledby="participant-summary-title">
+        <h3 id="participant-summary-title">Participant summary</h3>
+        <div class="table-scroll"><table><thead><tr><th>Participant</th><th>Shared paid</th><th>Personal</th><th>Fair share</th><th>Balance</th></tr></thead><tbody id="project-participant-summary"></tbody></table></div>
+      </section>
+
+      <section class="project-section" aria-labelledby="transactions-title">
+        <h3 id="transactions-title">Expenses</h3>
+        <div class="table-scroll"><table><thead><tr><th>Description</th><th>Original amount</th><th>Rate</th><th>Paid by</th><th>Type</th><th></th></tr></thead><tbody id="project-transactions-body"></tbody></table></div>
+      </section>
     </section>
 
     <section class="open-source" aria-labelledby="open-source-title">
