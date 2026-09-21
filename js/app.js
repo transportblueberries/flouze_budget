@@ -1,5 +1,6 @@
 import { calculateBudget } from './budget.js';
 import { formatCurrency, normalizeAmount } from './money.js';
+import { initProjectTool } from './project-ui.js';
 import { calculateRule503020 } from './rule-50-30-20.js';
 import { calculateSavingsGoal } from './savings-goal.js';
 import { clearState, loadSavedState, syncSavedState } from './storage.js';
@@ -134,10 +135,13 @@ function renderSavings() {
   }
 }
 
+const projectTool = initProjectTool({ money, onStateChange: persistIfEnabled });
+
 function renderAll() {
   renderBudget();
   renderRule();
   renderSavings();
+  projectTool.render();
 }
 
 function serialiseState() {
@@ -146,6 +150,7 @@ function serialiseState() {
     values: Object.fromEntries(
       allValueFields.map((id) => [id, document.getElementById(id).value]),
     ),
+    project: projectTool.getState(),
   };
 }
 
@@ -167,6 +172,7 @@ function restoreSavedState() {
       }
     }
   }
+  projectTool.restoreState(state.project);
   rememberCheckbox.checked = true;
 }
 
@@ -205,6 +211,7 @@ resetButton.addEventListener('click', () => {
     input.value = '';
     setFieldError(input);
   }
+  projectTool.reset();
   renderAll();
 });
 
