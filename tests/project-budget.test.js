@@ -107,3 +107,35 @@ test('rejects invalid participants, payer ids and conversion rates', () => {
   assert.throws(() => calculateProjectBudget({ participants: pair, transactions: [{ amount: 10, rate: 1, payerId: 'missing', shared: true }] }), /payer/i);
   assert.throws(() => calculateProjectBudget({ participants: pair, transactions: [{ amount: 10, rate: 0, payerId: 'mehdi', shared: true }] }), /rate/i);
 });
+
+test('tracks planned budget remaining or overrun', () => {
+  const result = calculateProjectBudget({
+    plannedBudget: 150,
+    participants: pair,
+    transactions: [{ amount: 120, rate: 1, payerId: 'mehdi', shared: true }],
+  });
+  assert.equal(result.plannedBudget, 150);
+  assert.equal(result.budgetRemaining, 30);
+  assert.equal(result.budgetStatus, 'under');
+
+  const over = calculateProjectBudget({
+    plannedBudget: 100,
+    participants: pair,
+    transactions: [{ amount: 120, rate: 1, payerId: 'mehdi', shared: true }],
+  });
+  assert.equal(over.budgetRemaining, -20);
+  assert.equal(over.budgetStatus, 'over');
+});
+
+test('aggregates reference-currency spend by category', () => {
+  const result = calculateProjectBudget({
+    participants: pair,
+    transactions: [
+      { amount: 100, rate: 1, payerId: 'mehdi', shared: true, category: 'lodging' },
+      { amount: 20, rate: 0.95, payerId: 'hanna', shared: true, category: 'food' },
+      { amount: 5, rate: 1, payerId: 'hanna', shared: false, category: 'food' },
+    ],
+  });
+
+  assert.deepEqual(result.byCategory, { lodging: 100, food: 24 });
+});
