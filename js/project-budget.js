@@ -90,13 +90,15 @@ function buildSettlements(participants) {
   return settlements;
 }
 
-export function calculateProjectBudget({ participants = [], transactions = [] } = {}) {
+export function calculateProjectBudget({ plannedBudget = 0, participants = [], transactions = [] } = {}) {
   const normalizedParticipants = validateParticipants(participants);
   const participantMap = new Map(normalizedParticipants.map((participant) => [participant.id, participant]));
 
   let totalSpendCents = 0;
   let sharedSpendCents = 0;
   let personalSpendCents = 0;
+  const categoryCents = new Map();
+  const normalizedBudget = normalizeAmount(plannedBudget);
 
   for (const transaction of transactions) {
     const amount = normalizeAmount(transaction?.amount ?? 0);
@@ -109,6 +111,8 @@ export function calculateProjectBudget({ participants = [], transactions = [] } 
 
     const referenceCents = toCents(amount * rate);
     totalSpendCents += referenceCents;
+    const category = String(transaction?.category ?? 'other').trim() || 'other';
+    categoryCents.set(category, (categoryCents.get(category) ?? 0) + referenceCents);
 
     const shared = transaction?.shared !== false;
     if (!shared) {
@@ -137,10 +141,17 @@ export function calculateProjectBudget({ participants = [], transactions = [] } 
     participant.balanceCents = participant.sharedPaidCents - participant.shareCents;
   }
 
+  const budgetRemaining = roundMoney(normalizedBudget - fromCents(totalSpendCents));
+  const budgetStatus = budgetRemaining > 0 ? 'under' : budgetRemaining < 0 ? 'over' : 'balanced';
+
   return {
+    plannedBudget: roundMoney(normalizedBudget),
+    budgetRemaining,
+    budgetStatus,
     totalSpend: fromCents(totalSpendCents),
     sharedSpend: fromCents(sharedSpendCents),
     personalSpend: fromCents(personalSpendCents),
+    byCategory: Object.fromEntries([...categoryCents].map(([category, cents]) => [category, fromCents(cents)])),
     participants: normalizedParticipants.map((participant) => ({
       id: participant.id,
       name: participant.name,
