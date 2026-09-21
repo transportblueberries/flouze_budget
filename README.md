@@ -16,13 +16,14 @@ The project is currently in an early stage. The repository is being opened progr
 
 ## Budget tools
 
-The public repository now includes three lightweight tools:
+The public repository now includes four lightweight tools:
 
 - **Monthly budget** — compare net monthly income with common student expense categories and planned savings.
 - **50 / 30 / 20 reference** — see a simple needs / wants / savings split. This is a reference framework, not a personalised recommendation.
 - **Savings goal** — estimate how many monthly contributions are needed to reach a target, without assuming investment returns or interest.
+- **Trip / project budget** — track a shared trip, move or event with 2–6 participants, weighted splits, personal versus shared expenses, categories, planned-budget tracking, manual currency conversion and net reimbursements.
 
-The tools support CHF, EUR and USD display formatting. Currency selection changes formatting only; Flouze does not perform foreign-exchange conversion.
+The tools support CHF, EUR and USD display formatting. Currency selection changes formatting only. The trip / project tool accepts a manual per-transaction conversion rate; Flouze does not fetch or provide live foreign-exchange rates.
 
 ## Privacy model
 
@@ -47,6 +48,8 @@ The calculation and storage modules use Node's built-in test runner:
 ```bash
 npm test
 ```
+
+GitHub Actions runs the same test suite on pushes and pull requests.
 
 ## Important note
 
