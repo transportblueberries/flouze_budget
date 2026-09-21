@@ -3,6 +3,7 @@ import { calculateProjectBudget } from './project-budget.js';
 
 const PARTICIPANT_SLOTS = 6;
 const CATEGORIES = ['transport', 'lodging', 'food', 'activities', 'shopping', 'other'];
+const CURRENCIES = ['CHF', 'EUR', 'USD'];
 
 function noopController() {
   return {
@@ -10,6 +11,25 @@ function noopController() {
     restoreState() {},
     reset() {},
     render() {},
+  };
+}
+
+function sanitizeTransaction(transaction) {
+  if (!transaction || typeof transaction !== 'object') return null;
+  const amount = Number(transaction.amount);
+  const rate = Number(transaction.rate);
+  const payerId = String(transaction.payerId ?? '').trim();
+  if (!Number.isFinite(amount) || amount < 0 || !Number.isFinite(rate) || rate <= 0 || !payerId) {
+    return null;
+  }
+  return {
+    description: typeof transaction.description === 'string' ? transaction.description : '',
+    category: CATEGORIES.includes(transaction.category) ? transaction.category : 'other',
+    amount,
+    currency: CURRENCIES.includes(transaction.currency) ? transaction.currency : 'CHF',
+    rate,
+    payerId,
+    shared: transaction.shared !== false,
   };
 }
 
@@ -46,10 +66,10 @@ export function initProjectTool({ money, onStateChange = () => {} } = {}) {
     });
   }
 
-  function updatePayerOptions() {
+  function updatePayerOptions(currentParticipants) {
     const current = payerSelect.value;
     payerSelect.replaceChildren();
-    for (const participant of participants()) {
+    for (const participant of currentParticipants) {
       const option = document.createElement('option');
       option.value = participant.id;
       option.textContent = participant.name;
@@ -61,21 +81,20 @@ export function initProjectTool({ money, onStateChange = () => {} } = {}) {
   }
 
   function transactionLabel(transaction) {
-    return transaction.description || CATEGORIES.includes(transaction.category)
-      ? (transaction.description || transaction.category)
-      : 'Expense';
+    if (transaction.description) return transaction.description;
+    return CATEGORIES.includes(transaction.category) ? transaction.category : 'Expense';
   }
 
-  function renderTransactions() {
+  function renderTransactions(currentParticipants) {
     transactionBody.replaceChildren();
+    const participantMap = new Map(currentParticipants.map((participant) => [participant.id, participant.name]));
     transactions.forEach((transaction, index) => {
       const row = document.createElement('tr');
-      const payer = participants().find((participant) => participant.id === transaction.payerId);
       for (const text of [
         transactionLabel(transaction),
         `${transaction.amount.toFixed(2)} ${transaction.currency}`,
         transaction.rate.toFixed(4),
-        payer?.name ?? transaction.payerId,
+        participantMap.get(transaction.payerId) ?? transaction.payerId,
         transaction.shared ? 'Shared' : 'Personal',
       ]) {
         const cell = document.createElement('td');
@@ -99,8 +118,13 @@ export function initProjectTool({ money, onStateChange = () => {} } = {}) {
     document.querySelector('#project-shared').textContent = money(result.sharedSpend);
     document.querySelector('#project-personal').textContent = money(result.personalSpend);
     const remaining = document.querySelector('#project-remaining');
-    remaining.textContent = money(result.budgetRemaining);
-    remaining.dataset.status = result.budgetStatus;
+    if (plannedBudget.value.trim() === '') {
+      remaining.textContent = 'Not set';
+      remaining.dataset.status = 'unset';
+    } else {
+      remaining.textContent = money(result.budgetRemaining);
+      remaining.dataset.status = result.budgetStatus;
+    }
 
     participantBody.replaceChildren();
     for (const participant of result.participants) {
@@ -132,10 +156,17 @@ export function initProjectTool({ money, onStateChange = () => {} } = {}) {
     }
 
     categoriesList.replaceChildren();
-    for (const [category, amount] of Object.entries(result.byCategory)) {
+    const categories = Object.entries(result.byCategory);
+    if (categories.length === 0) {
       const item = document.createElement('li');
-      item.textContent = `${category}: ${money(amount)}`;
+      item.textContent = 'No expenses yet.';
       categoriesList.append(item);
+    } else {
+      for (const [category, amount] of categories) {
+        const item = document.createElement('li');
+        item.textContent = `${category}: ${money(amount)}`;
+        categoriesList.append(item);
+      }
     }
   }
 
@@ -145,15 +176,15 @@ export function initProjectTool({ money, onStateChange = () => {} } = {}) {
   }
 
   function render() {
-    updatePayerOptions();
-    renderTransactions();
-    const currentParticipants = participants();
-    if (currentParticipants.length < 2) {
-      showError('Add at least two participants to calculate the split.');
-      return;
-    }
-
     try {
+      const currentParticipants = participants();
+      updatePayerOptions(currentParticipants);
+      renderTransactions(currentParticipants);
+      if (currentParticipants.length < 2) {
+        showError('Add at least two participants to calculate the split.');
+        return;
+      }
+
       const result = calculateProjectBudget({
         plannedBudget: normalizeAmount(plannedBudget.value),
         participants: currentParticipants,
@@ -238,7 +269,7 @@ export function initProjectTool({ money, onStateChange = () => {} } = {}) {
       });
     }
     transactions = Array.isArray(state.transactions)
-      ? state.transactions.filter((transaction) => transaction && typeof transaction === 'object')
+      ? state.transactions.map(sanitizeTransaction).filter(Boolean)
       : [];
     render();
   }
